@@ -3,3 +3,5 @@ test/.placeholder
 node_modules
 
 .openzeppelin/.session
+
+build
