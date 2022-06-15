@@ -1,10 +1,12 @@
-pragma solidity >=0.6.0 <0.8.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
 import "./Context.sol";
 import "./ERC165.sol";
 import "./IERC721.sol";
 import "./IERC721Metadata.sol";
 import "./IERC721Enumerable.sol";
+import "./IERC721Receiver.sol";
 
 import "./utils/SafeMath.sol";
 import "./utils/Address.sol";
@@ -16,7 +18,7 @@ import "./utils/Strings.sol";
  * @title ERC721 Non-Fungible Token Standard basic implementation
  * @dev see https://eips.ethereum.org/EIPS/eip-721
  */
-contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Enumerable {
+contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Enumerable, IERC721Receiver {
     using SafeMath for uint256;
     using Address for address;
     using EnumerableSet for EnumerableSet.UintSet;
@@ -473,4 +475,8 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Enumerable 
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
     function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual { }
+
+    function onERC721Received(address, address, uint256, bytes calldata) external returns(bytes4) {
+    return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
+} 
 }

@@ -1,4 +1,6 @@
-pragma solidity ^0.7.0;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.0;
+pragma abicoder v2;
 
 import "./Ownable.sol";
 import "./ERC721.sol";
@@ -22,7 +24,7 @@ contract LushVault is ERC721, Ownable {
 
     mapping (uint256 => uint256) public tokenPrices;
 
-    EnumerableSet.UintSet public tokensForSale;
+    EnumerableSet.UintSet private tokensForSale;
 
     constructor(string memory name, string memory symbol) ERC721(name, symbol) {
 
@@ -32,40 +34,44 @@ contract LushVault is ERC721, Ownable {
 /* Consider adding additional function to allow withdrawal to an address other than the contract owner */
     function withdraw() public onlyOwner {
         uint balance = address(this).balance;
-        msg.sender.transfer(balance);
+        payable(msg.sender).transfer(balance);
     }
 
     function setBaseURI(string memory baseURI) public onlyOwner {
         _setBaseURI(baseURI);
     }
 
-    function setTokenPrice (uint256 memory tokenPrice, uint256 memory tokenId) public onlyOwner {
+    function setTokenPrice (uint256 tokenPrice, uint256 tokenId) public onlyOwner {
         tokenPrices[tokenId] = tokenPrice;
         tokensForSale.add(tokenId);
     }
 
-    function updateTokenPrice (uint256 memory tokenPrice, uint256 memory tokenId) public onlyOwner {
+    function updateTokenPrice (uint256 tokenPrice, uint256 tokenId) public onlyOwner {
         tokenPrices[tokenId] = tokenPrice;
     }
 
-    function getTokenPrice (uint256 memory tokenId) public view {
+    function getTokenPrice (uint256 tokenId) public view returns(uint256) {
         return tokenPrices[tokenId];
     }
 
-    function delistToken (uint256 memory tokenId) public onlyOwner {
+    function delistToken (uint256 tokenId) public onlyOwner {
         tokensForSale.remove(tokenId);
     }
 
     function buyToken (uint256 tokenId) public payable {
-        uint256 memory tokenPrice = tokenPrices[tokenId];
+        uint256 tokenPrice = tokenPrices[tokenId];
         require(tokenPrice <= msg.value, "Ether value sent is not correct");
         require(tokensForSale.contains(tokenId), "Token is not for sale");
         tokensForSale.remove(tokenId);
         _safeMint(_msgSender(), tokenId);
     }
 
-    function getTokensForSale () public view {
-        return tokensForSale;
+    function getTokensForSale () public view returns (uint256[] memory) {
+        uint256[] memory tokenReturn = new uint256[](tokensForSale.length());
+        for (uint i = 0; i < tokensForSale.length(); i++) {
+            tokenReturn[i] = tokensForSale.at(i);
+        }
+        return tokenReturn;
     }
 
 }
