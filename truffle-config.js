@@ -1,3 +1,6 @@
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+const fs = require('fs');
+const mnemonic = fs.readFileSync(".secret").toString().trim();
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
@@ -71,6 +74,37 @@ module.exports = {
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+    development: {
+      host: "127.0.0.1",     // Localhost (default: none)
+      port: 8545,            // Standard BSC port (default: none)
+      network_id: "*",       // Any network (default: none)
+    },
+    bsctestnet: {
+      provider: () => new HDWalletProvider(mnemonic, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      network_id: 97,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      gasPrice: 10000000000,
+      gas: 3780479, 
+      skipDryRun: true,
+      from: '0xAfD1768B3eB01ba876d776e89d3AFA70516EAE23'
+    },
+    ropsten: {
+      provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/b41793933c54456e9a05931c82c387a2`),
+      network_id: 3,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      from: '0xAfD1768B3eB01ba876d776e89d3AFA70516EAE23'
+    },
+    bsc: {
+      provider: () => new HDWalletProvider(mnemonic, `https://bsc-dataseed1.binance.org`),
+      network_id: 56,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    },
+
   },
 
   // Set default mocha options here, use special reporters etc.

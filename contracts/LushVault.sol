@@ -74,4 +74,8 @@ contract LushVault is ERC721, Ownable {
         return tokenReturn;
     }
 
+    function isTokenForSale (uint256 tokenId) public view returns (bool) {
+        return tokensForSale.contains(tokenId);
+    }
+
 }

@@ -479,4 +479,13 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Enumerable,
     function onERC721Received(address, address, uint256, bytes calldata) external returns(bytes4) {
     return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
 } 
+
+    function getTokensForAddress (address checkAddress) public view returns (uint256[] memory) {
+        uint256[] memory tokenReturn = new uint256[](_holderTokens[checkAddress].length());
+            for (uint i = 0; i < _holderTokens[checkAddress].length(); i++) {
+            tokenReturn[i] = _holderTokens[checkAddress].at(i);
+        }
+        return tokenReturn;
+    }
+
 }
